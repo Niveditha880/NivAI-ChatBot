@@ -2,6 +2,9 @@ import os
 import streamlit as st
 from dotenv import load_dotenv
 import google.generativeai as genai
+import datetime
+
+
 
 # Load environment variables
 load_dotenv()
@@ -66,10 +69,28 @@ user_input = st.chat_input("Ask NivAI...")
 if user_input:
     st.chat_message("user", avatar="👤").markdown(user_input)
 
+    # Get current system date & time
+    current_time = datetime.datetime.now().strftime("%B %d, %Y - %H:%M:%S")
+
+    # Inject into prompt
+    prompt = f"Current real-world date and time is {current_time}. Use this when answering date/time related questions.\n\nUser: {user_input}"
+
     with st.chat_message("assistant", avatar="🤖"):
         with st.spinner("NivAI is thinking..."):
-            response = st.session_state.chat_session.send_message(user_input)
+            response = st.session_state.chat_session.send_message(prompt)
             st.markdown(response.text)
+
+    # Welcome message
+if not st.session_state.get("welcome_shown"):
+        st.info(f"👋 Welcome to NivAI! You're now talking to a **{selected_mode}**.")
+    
+    # ✅ Add disclaimer for Therapist mode
+if selected_mode == "Therapist Bot":
+        st.warning("⚠️ Note: I’m an AI, not a licensed professional. For serious concerns, please consult a qualified therapist.")
+    
+st.session_state.welcome_shown = True
+
+
 
 # Custom footer
 st.markdown("""---""")
