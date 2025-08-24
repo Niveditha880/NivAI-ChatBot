@@ -31,13 +31,7 @@ st.sidebar.title("🛠️ Expert Mode")
 selected_mode = st.sidebar.selectbox("Choose Mode", list(EXPERT_MODES.keys()))
 st.sidebar.info(f"You're chatting with **{selected_mode}** mode.")
 
-# Optional: Download chat history
-if st.sidebar.button("📥 Download Chat History"):
-    chat_text = ""
-    for msg in st.session_state.get("chat_session", {}).get("history", []):
-        role = "You" if msg.role == "user" else "NivAI"
-        chat_text += f"{role}: {msg.parts[0].text}\n\n"
-    st.sidebar.download_button("Download .txt", chat_text, file_name="nivai_chat.txt")
+
 
 # Reset chat if mode changed or not set
 if "chat_session" not in st.session_state or st.session_state.get("current_mode") != selected_mode:
